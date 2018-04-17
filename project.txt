@@ -1,0 +1,24 @@
+Web3 = require('web3')
+
+web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+code = fs.readFileSync('finalcontract.sol').toString()
+
+solc = require('solc')
+
+compiledCode = solc.compile(code)
+
+abiDefinition = JSON.parse(compiledCode.contracts[':finalcontract'].interface)
+
+VotingContract = web3.eth.contract(abiDefinition)
+
+byteCode = compiledCode.contracts[':finalcontract'].bytecode
+
+deployedContract = VotingContract.new({data: byteCode, from: web3.eth.accounts[0], gas: 6000000})
+
+contractInstance = VotingContract.at(deployedContract.address)
+
+
+//.....
+
+https://medium.com/@mvmurthy/full-stack-hello-world-voting-ethereum-dapp-tutorial-part-1-40d2d0d807c2
